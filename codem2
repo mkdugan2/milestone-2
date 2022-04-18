@@ -1,0 +1,133 @@
+#DEAN'S CODE
+
+
+def find_splice(dna_motif, dna):
+    splice = []
+    count = 0
+    index = 0
+    x = len(dna_motif)
+    for i in range(0,x):
+        while dna_motif[i]!= dna[count]:
+            count = count + 1
+        splice.append(count)
+        index = index + 1
+    return splice
+
+def shared_motif(dna_list):
+  solution = "" 
+  ref = dna_list[0] # this dna string is the reference in order to compare the other stringds in the list to in order to find the shared pattern
+  for i in range(len(ref)):
+    for j in range(len(ref)-i+1):# I used for loops here in order to keep building the pattern and make it longest possible, also makes sure that i is the letter that initializes, and j is the length of said pattern
+      string = ref[i: i+j] # this creates the string
+      checker = True
+      for n in range(len(dna_list)):
+        if string not in dna_list[n]: # checks if the shared string is not in other other dna strings contained in the list
+          checker = False
+      if j > len(solution) and checker == True: # if the shared string is in all of the dna strings in the list then it will update the solution, since the new legnth is longer than the previous solution
+            solution = string 
+  return solution
+
+def reverse_complement(dna):
+  reverse_complement = [ ]                #start with an empty list
+
+  for i in range (0, len(dna)):
+
+    if dna[i] == 'A':
+      reverse_complement.insert(0,'T')     #use inser 0 to add elements to list inversely
+    elif dna[i] == 'T':
+      reverse_complement.insert(0,'A')
+    elif dna[i] == 'C':
+      reverse_complement.insert(0,'G')
+    elif dna[i] == 'G':
+       reverse_complement.insert(0,'C')
+
+    reverse_complement_str = ''.join(reverse_complement)     #convert list to string
+
+  return reverse_complement_str
+
+def rev_palindrome(dna):
+    locations = []
+    complement = reverse_complement(dna)
+    for i in range(len(dna)):
+        for j in range(i,len(dna)+1):
+            if i != j and j-i>=4:
+                if dna[i:j] == complement[-j:-i]:
+                    locations.append((i,j-i))
+    return locations
+
+
+#Sonakshi's code
+
+def get_edges(dna_dict):
+  """Inputs: Accepts a dictionary that maps DNA strings to their Rosalind identifiers 
+  Outputs: Returns an adjacent list 
+  """
+  key_list = list(dna_dict.keys())
+  list2=[]
+    #empty list
+  for i in key_list:
+    for j in key_list[(key_list.index(i)+1):]:
+            #: slices array and starts the list at the i+1 and loops over the elements after
+        if(dna_dict[i][:3]==dna_dict[j][-3:] or dna_dict[i][-3:]==dna_dict[j][:3]):
+                list2.append((i,j))
+
+    return list2
+
+
+def assemble_genome(dna_list):
+  """Inputs: accept a list of DNA string 
+  Outputs: return the shortest superstring containing all DNA strings 
+  """
+
+  len_ldna = len(dna_list)
+
+  while(len_ldna > 1):
+    
+        max_overlap_size = 0
+
+        left_index = 0
+        right_index = 0
+
+        res = ""
+        i = 0
+        j = 0
+
+        for i in range(len_ldna):
+
+            for j in range(i+1, len_ldna):
+
+                combined_str, overlap_size = overlap_pair(dna_list[i], dna_list[j]) 
+                print('combined_str', combined_str, 'overlap', overlap_size, 'str1', dna_list[i], 'str2', dna_list[j])
+
+                if overlap_size > max_overlap_size:
+                    max_overlap_size = overlap_size
+                    res = combined_str
+                    left_index = i
+                    right_index = j 
+
+        len_ldna -= 1
+
+        if max_overlap_size == 0:
+            dna_list[0] = dna_list[0] + dna_list[len_ldna]                
+        else:
+            dna_list[left_index] = res
+            dna_list[right_index] = dna_list[len_ldna]
+ 
+  return dna_list[0]
+
+# Josh's Code:
+from math import factorial
+def perfect_match(rna):
+  dictionary = {'A':0, 'U':0, 'C':0, 'G':0} #create a dictionary with A,C,G,U
+  for j in rna:
+    AU =0
+    CG=0
+    if dictionary['A']==dictionary['U']: 
+      AU+=1                              # add each pairing
+    if dictionary['C'] == dictionary ['G']:
+      CG+=1
+
+    
+    
+
+  perfectMatchings = factorial(AU) * factorial(CG) #factorial so it includes the total amount since one A can pair with any U in the sequence
